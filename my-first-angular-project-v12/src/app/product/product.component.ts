@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit {
-  @Input() productName: string;
+  @Input() productName: string = "";
   @Output() productClicked = new EventEmitter();
 
   constructor() { }
