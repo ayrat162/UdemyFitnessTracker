@@ -5,18 +5,23 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { ProductComponent } from './product/product.component';
 import { ProductsComponent } from './products/products.component';
+import { ProductsService } from './services/products.service';
+import { HomeComponent } from './home/home.component';
+import { AppRoutingModule } from './app-routing/app-routing.module';
 
 @NgModule({
-  declarations: [
+  declarations: [	
     AppComponent,
     ProductComponent,
-    ProductsComponent
-  ],
+    ProductsComponent,
+      HomeComponent
+   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule
   ],
-  providers: [],
+  providers: [ProductsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
