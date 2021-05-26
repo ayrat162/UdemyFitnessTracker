@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "ng-fitness-tracker-ayrat": {
+      "hosting": {
+        "fitness-tracker": [
+          "ng-fitness-tracker-ayrat"
+        ]
+      }
+    }
+  }
+}
