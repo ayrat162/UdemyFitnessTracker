@@ -14,6 +14,8 @@ import { environment } from '../environments/environment';
 import { UIService } from './shared/ui.service';
 import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from './app.reducer';
 
 @NgModule({
   declarations: [
@@ -26,14 +28,12 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-
     AppRoutingModule,
-
     SharedModule,
     AuthModule,
-
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    StoreModule.forRoot(reducers),
   ],
   providers: [
     AuthService,
