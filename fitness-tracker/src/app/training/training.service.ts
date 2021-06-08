@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Exercise } from "./exercise.model";
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
+import { UIService } from '../shared/ui.service';
 
 @Injectable()
 export class TrainingService {
@@ -14,11 +15,14 @@ export class TrainingService {
   private runningExercise?: Exercise | null;
   private subscriptions: Subscription[] = [];
 
-  constructor(private db: AngularFirestore) { }
+  constructor(
+    private db: AngularFirestore,
+    private ui: UIService
+    ) { }
 
   cancelSubscriptions() {
     this.subscriptions.forEach(subscription => {
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
     });
   }
 
@@ -40,7 +44,7 @@ export class TrainingService {
           this.availableExercises = exercises;
           this.exercisesChanged.next([...this.availableExercises]);
         },
-          error => console.log(error)
+          error => this.ui.showError(error)
         ));
   }
 
@@ -51,7 +55,7 @@ export class TrainingService {
       .subscribe(exercises => {
         this.finishedExercisesChanged.next(exercises as Exercise[]);
       },
-        error => console.log(error)
+      error => this.ui.showError(error)
       ));
   }
 

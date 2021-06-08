@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 
 import { AuthData } from "./auth-data.model";
 import { TrainingService } from '../training/training.service';
+import { UIService } from '../shared/ui.service';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,8 @@ export class AuthService {
   constructor(
     private router: Router,
     private fireAuth: AngularFireAuth,
-    private trainingService: TrainingService
+    private trainingService: TrainingService,
+    private ui: UIService
   ) { }
 
   initAuthListener() {
@@ -33,19 +35,31 @@ export class AuthService {
   }
 
   registerUser(authData: AuthData) {
+    this.ui.loadingStateChanged.next(true);
     this.fireAuth.createUserWithEmailAndPassword(authData.email, authData.password)
-      .then(result => {
-        console.log(result);
+      .then(() => {
+        this.ui.loadingStateChanged.next(false);
       })
-      .catch(error => console.log(error));
+      .catch(
+        error => {
+          this.ui.loadingStateChanged.next(false);
+          this.ui.showError(error);
+        }
+      );
   }
 
   login(authData: AuthData) {
+    this.ui.loadingStateChanged.next(true);
     this.fireAuth.signInWithEmailAndPassword(authData.email, authData.password)
-      .then(result => {
-        console.log(result);
+      .then(() => {
+        this.ui.loadingStateChanged.next(false);
       })
-      .catch(error => console.log(error));
+      .catch(
+        error => {
+          this.ui.loadingStateChanged.next(false);
+          this.ui.showError(error)
+        }
+      );
   }
 
   logout() {

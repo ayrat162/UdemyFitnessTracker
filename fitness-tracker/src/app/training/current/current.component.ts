@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { TrainingService } from '../training.service';
 import { StopTrainingComponent } from './stop-training.component';
 
@@ -8,16 +9,21 @@ import { StopTrainingComponent } from './stop-training.component';
   templateUrl: './current.component.html',
   styleUrls: ['./current.component.css']
 })
-export class CurrentComponent implements OnInit {
+export class CurrentTrainingComponent implements OnInit, OnDestroy {
   progress = 0;
   timer: any;
+  dialogSubscription!: Subscription;
 
   constructor(
-      private dialog: MatDialog, 
-      private trainingService: TrainingService) { }
+    private dialog: MatDialog,
+    private trainingService: TrainingService) { }
 
   ngOnInit(): void {
     this.startOrResumeTimer();
+  }
+
+  ngOnDestroy(): void {
+    this.dialogSubscription?.unsubscribe();
   }
 
   startOrResumeTimer() {
@@ -40,7 +46,7 @@ export class CurrentComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.dialogSubscription = dialogRef.afterClosed().subscribe(result => {
       if (result)
         this.trainingService.cancelExercise(this.progress)
       else {
