@@ -1,6 +1,4 @@
-import { Action } from '@ngrx/store';
-
-import { UIactions, START_LOADING, STOP_LOADING } from './ui.actions';
+import { START_LOADING, STOP_LOADING, UIactions } from './ui.actions';
 
 export interface State {
   isLoading: boolean;

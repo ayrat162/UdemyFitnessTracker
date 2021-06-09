@@ -4,6 +4,9 @@ import { Exercise } from "./exercise.model";
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { UIService } from '../shared/ui.service';
+import * as fromRoot from '../app.reducer';
+import { Store } from '@ngrx/store';
+import * as UI from '../shared/ui.actions';
 
 @Injectable()
 export class TrainingService {
@@ -17,7 +20,8 @@ export class TrainingService {
 
   constructor(
     private db: AngularFirestore,
-    private ui: UIService
+    private ui: UIService,
+    private store: Store<fromRoot.State>
     ) { }
 
   cancelSubscriptions() {
@@ -27,6 +31,7 @@ export class TrainingService {
   }
 
   fetchAvailableExercises() {
+    this.store.dispatch(new UI.StartLoading())
     this.subscriptions.push(
       this.db
         .collection('availableExercises')
@@ -40,11 +45,14 @@ export class TrainingService {
             });
           })
         ).subscribe((exercises: Exercise[]) => {
-          console.log(exercises);
+          this.store.dispatch(new UI.StopLoading());
           this.availableExercises = exercises;
           this.exercisesChanged.next([...this.availableExercises]);
         },
-          error => this.ui.showError(error)
+          error => {
+            this.store.dispatch(new UI.StopLoading());
+            this.ui.showError(error)
+          }
         ));
   }
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Store } from '@ngrx/store';
 
@@ -9,12 +8,10 @@ import { TrainingService } from '../training/training.service';
 import { UIService } from '../shared/ui.service';
 import * as fromRoot from '../app.reducer';
 import { StartLoading, StopLoading } from '../shared/ui.actions';
+import { SetAuthenticated, SetUnauthenticated } from './auth.actions';
 
 @Injectable()
 export class AuthService {
-  authChange = new Subject<boolean>();
-  private isAuthenticated = false;
-
   constructor(
     private router: Router,
     private fireAuth: AngularFireAuth,
@@ -27,13 +24,11 @@ export class AuthService {
   initAuthListener() {
     this.fireAuth.authState.subscribe(user => {
       if (user) {
-        this.isAuthenticated = true;
-        this.authChange.next(true);
+        this.store.dispatch(new SetAuthenticated())
         this.router.navigate(['/training']);
       } else {
-        this.isAuthenticated = false;
+        this.store.dispatch(new SetUnauthenticated())
         this.trainingService.cancelSubscriptions();
-        this.authChange.next(false);
         this.router.navigate(['/login']);
       }
     });
@@ -54,24 +49,20 @@ export class AuthService {
   }
 
   login(authData: AuthData) {
-    this.ui.loadingStateChanged.next(true);
+    this.store.dispatch(new StartLoading());
     this.fireAuth.signInWithEmailAndPassword(authData.email, authData.password)
       .then(() => {
-        this.ui.loadingStateChanged.next(false);
+        this.store.dispatch(new StopLoading());
       })
       .catch(
         error => {
-          this.ui.loadingStateChanged.next(false);
           this.ui.showError(error)
+          this.store.dispatch(new StopLoading());
         }
       );
   }
 
   logout() {
     this.fireAuth.signOut();
-  }
-
-  isAuth() {
-    return this.isAuthenticated;
   }
 }
