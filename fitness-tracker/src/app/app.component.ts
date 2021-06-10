@@ -12,14 +12,12 @@ import { Observable } from 'rxjs';
 export class AppComponent implements OnInit {
   title = 'fitness-tracker';
   openSidenav = false;
-  isAuth$!: Observable<boolean>;
 
   constructor(
-    private authService: AuthService,
-    private store: Store<fromRoot.State>) {}
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
-    this.isAuth$ = this.store.select(fromRoot.getIsAuth);
     this.authService.initAuthListener();
   }
 }

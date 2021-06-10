@@ -23,7 +23,6 @@ export class AuthService {
 
   initAuthListener() {
     this.fireAuth.authState.subscribe(user => {
-      console.log(user?.email);
       if (user) {
         this.store.dispatch(new SetAuthenticated())
         this.router.navigate(['/training']);
@@ -36,14 +35,14 @@ export class AuthService {
   }
 
   registerUser(authData: AuthData) {
-    // this.store.dispatch(new StartLoading());
+    this.store.dispatch(new StartLoading());
     this.fireAuth.createUserWithEmailAndPassword(authData.email, authData.password)
       .then(() => {
-        // this.store.dispatch(new StopLoading());
+        this.store.dispatch(new StopLoading());
       })
       .catch(
         error => {
-          // this.store.dispatch(new StopLoading());
+          this.store.dispatch(new StopLoading());
           this.ui.showError(error);
         }
       );
@@ -53,12 +52,12 @@ export class AuthService {
     this.store.dispatch(new StartLoading());
     this.fireAuth.signInWithEmailAndPassword(authData.email, authData.password)
       .then(() => {
-        // this.store.dispatch(new StopLoading());
+        this.store.dispatch(new StopLoading());
       })
       .catch(
         error => {
           this.ui.showError(error)
-          // this.store.dispatch(new StopLoading());
+          this.store.dispatch(new StopLoading());
         }
       );
   }
