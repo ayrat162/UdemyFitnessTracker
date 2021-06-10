@@ -1,22 +1,22 @@
 import { AuthActions, SET_AUTHENTICATED, SET_UNAUTHENTICATED } from "./auth.actions";
 
 export interface State {
-  isAuthenticated: boolean;
+  isAuth: boolean;
 };
 
 const initialState: State = {
-  isAuthenticated: false
+  isAuth: false
 }
 
 export function authReducer(state = initialState, action: AuthActions) {
   switch (action.type) {
     case SET_AUTHENTICATED:
-      return { isAuthenticated: true }
+      return { isAuth: true }
     case SET_UNAUTHENTICATED:
-      return { isAuthenticated: false }
+      return { isAuth: false }
     default:
-      return initialState
+      return state
   }
 }
 
-export const getIsAuthenticated = (state: State) => state.isAuthenticated;
+export const getIsAuth = (state: State) => state.isAuth;
